@@ -1,0 +1,264 @@
+﻿@page "/KanbanLive"
+
+@using DataAccessLibrary.Models
+@using DataAccessLibrary.Other
+@using TableDependency.SqlClient.Base.Enums
+
+
+@inject IDataAccess _db
+@inject ISqlDataAccess sqlDataAccess
+@inject ISqlTableDependencyService SqlDependency
+@implements IDisposable
+
+
+<h4>Kanban Live</h4>
+
+
+<div class="row">
+
+    <div class="col-lg-3">
+        <div class="text-center">
+            <h5>DESTINATION</h5>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="text-center">
+            <h5>DESCRIPTION</h5>
+        </div>
+    </div>
+
+    <div class="col-lg-3">
+        <div class="text-center">
+            <h5>DATE&TIME</h5>
+        </div>
+    </div>
+
+</div>
+
+
+
+@if (kanban is not null & productData.Data is not null & areaData.Data is not null)
+    {
+<div class="row">
+    @foreach (var k in kanban)
+    {
+
+
+        @if (k.KANBAN_STATUS == 1)
+        {
+            <div class="col-lg-3">
+                <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var a in areaData.Data)
+                        {
+                            if (k.KANBAN_DESTINATION == a.AREA_ID)
+                            {
+                                <h4>@a.AREA_NAME</h4>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var p in productData.Data)
+                        {
+                            if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                            {
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NAME</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NUMBER</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 1).StatusDescription</h4>
+                            </div>
+                        </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        <h4>@k.KANBAN_START_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h4>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (k.KANBAN_STATUS == 2)
+        {
+            <div class="col-lg-3">
+                <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var a in areaData.Data)
+                        {
+                            if (k.KANBAN_DESTINATION == a.AREA_ID)
+                            {
+                                <h4>@a.AREA_NAME</h4>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var p in productData.Data)
+                        {
+                            if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                            {
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NAME</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NUMBER</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 2).StatusDescription</h4>
+                            </div>
+                        </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        <h4>@k.KANBAN_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h4>
+                    </div>
+                </div>
+            </div>
+
+        }
+
+        @if (k.KANBAN_STATUS == 3)
+        {
+            <div class="col-lg-3">
+                <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var a in areaData.Data)
+                        {
+                            if (k.KANBAN_DESTINATION == a.AREA_ID)
+                            {
+                                <h4>@a.AREA_NAME</h4>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        @foreach (var p in productData.Data)
+                        {
+                            if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                            {
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NAME</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@p.PRODUCT_NUMBER</h4>
+                            </div>
+                            <div class="col-sm-4">
+                                <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 3).StatusDescription</h4>
+                            </div>
+                        </div>
+                            }
+
+                        }
+                    </div>
+                            </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                    <div class="card-body text-center">
+                        <h4>@k.KANBAN_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h4>
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+</div>
+
+
+    }
+    else
+    {
+        <p><em>Loading...</em></p>
+        <div class="spinner-border"></div>
+    }
+
+
+@code {
+
+    private List<Kanban_dbModel> kanban = new List<Kanban_dbModel>();
+
+
+    private KanbanStatusData kanbanStatusData = new KanbanStatusData();
+    private AreaData areaData = new AreaData();
+    private ProductData productData = new ProductData();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        kanban = await _db.Get_Kanban();
+        kanban = kanban.OrderBy(o => o.KANBAN_STATUS).ToList();
+
+        // Subscription to table record change events
+        SqlDependency.OnKanbanChanged += KanbanChanged;
+    }
+
+
+    void IDisposable.Dispose()
+    {
+        SqlDependency.OnKanbanChanged -= this.KanbanChanged;
+        SqlDependency.Dispose();
+    }
+
+
+    //event handler => update the HTML view
+    private async void KanbanChanged(object sender, KanbanChangeEventArgs args)
+    {
+        var recordToupdate = this.kanban.FirstOrDefault(x => x.KANBAN_ID == args.KanbanNewValue.KANBAN_ID);
+
+        if (recordToupdate == null)
+        {
+            this.kanban.Add(args.KanbanNewValue);
+        }
+        else
+        {
+            recordToupdate.KANBAN_ID = args.KanbanNewValue.KANBAN_ID;
+            recordToupdate.KANBAN_STATUS = args.KanbanNewValue.KANBAN_STATUS;
+            recordToupdate.KANBAN_DESTINATION = args.KanbanNewValue.KANBAN_DESTINATION;
+            recordToupdate.KANBAN_PRODUCT_ID = args.KanbanNewValue.KANBAN_PRODUCT_ID;
+            recordToupdate.KANBAN_PACKAGING_ID = args.KanbanNewValue.KANBAN_PACKAGING_ID;
+            recordToupdate.KANBAN_COMMENT = args.KanbanNewValue.KANBAN_COMMENT;
+            recordToupdate.KANBAN_USER_NAME = args.KanbanNewValue.KANBAN_USER_NAME;
+            recordToupdate.KANBAN_DATETIME = args.KanbanNewValue.KANBAN_DATETIME;
+            recordToupdate.KANBAN_START_DATETIME = args.KanbanNewValue.KANBAN_START_DATETIME;
+        }
+
+        kanban = kanban.OrderBy(o => o.KANBAN_STATUS).ToList();
+
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+
+    }
+
+
+
+}

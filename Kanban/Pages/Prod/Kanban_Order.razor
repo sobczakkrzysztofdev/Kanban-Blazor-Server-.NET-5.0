@@ -1,0 +1,200 @@
+﻿@page "/KanbanOrder"
+
+@using DataAccessLibrary.Models
+@using DataAccessLibrary.Other
+
+@inject IDataAccess _db
+@inject NavigationManager NavManager
+@inject IJSRuntime JsRuntime
+@inject Blazored.Localisation.Services.IBrowserDateTimeProvider _browserDateTimeProvider
+@inject AuthenticationStateProvider authStateProvider
+
+
+<h3>Kanban Order</h3>
+
+<div class="row">
+    <div class="col-lg-3">
+        <button class="btn btn-secondary" @onclick="() => From_Supermarket_To_Production()">FROM A SUPERMARKET TO PRODUCTION</button>
+    </div>
+    <div class="col-lg-3">
+        <button class="btn btn-secondary" @onclick="() => From_Prod_To_Supermarket()">FROM PRODUCTION TO SUPERMARKET</button>
+    </div>
+</div>
+
+
+<p style="margin-bottom:1cm;"> </p>
+
+
+@if (mode == "Supermarket=>Production")
+{
+    @if (productData.Data is not null & areaData.Data is not null)
+    {
+
+            <div>
+                <h5>Products:</h5>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-4">
+
+                @foreach (var prod in productData.Data)
+                {
+                    <div class="card" style="margin: 10px; width: 400px ">
+                        <img class="card-img-top" src="@prod.PRODUCT_PHOTO" alt="Card image">
+                        <div class="card-body">
+                            <h4 class="card-title">Name: @prod.PRODUCT_NAME</h4>
+                            <p class="card-text">Number: @prod.PRODUCT_NUMBER</p>
+
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-primary" @onclick="() => Place_order(prod.PRODUCT_ID)">ORDER</button>
+                        </div>
+
+                        @if (showup)
+                        {
+                            <!-- The Modal -->
+                            <div class="modal" tabindex="-1" style="display:block">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+
+                                        <!-- Modal Header -->
+                                        <div class="modal-header">
+                                            <h3 class="modal-title">KANBAN ORDER</h3>
+                                            <button type="button" class="close" @onclick="Close_modal">&times;</button>
+                                        </div>
+
+                                        <!-- Modal body -->
+                                        <div class="modal-body">
+                                            <span class="oi oi-circle-check" style="font-size:40px;" aria-hidden="true"></span>
+                                            <h4>Order placed</h4>
+                                        </div>
+
+                                        <!-- Modal footer -->
+                                        <div class="modal-footer">
+                                            <div class="row">
+                                                <div>
+                                                    <button type="button" class="btn btn-secondary btn-block btn-lg" @onclick="Close_modal">Order next</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                }
+            </div>
+        <p style="margin-bottom:1cm;"> </p>
+
+    }
+    else
+    {
+        <p><em>Loading...</em></p>
+        <div class="spinner-border"></div>
+
+    }
+}
+@if (mode == "Production=>Supermarket")
+{
+    <h6>No products.</h6>
+
+    <p style="margin-bottom:1cm;"> </p>
+}
+
+
+
+
+@code {
+
+
+    private Kanban_dbModel new_Kanban_dbModel = new Kanban_dbModel();
+
+
+    private AreaData areaData = new AreaData();
+    private ProductData productData = new ProductData();
+
+
+    private int areaID = 0;
+    private int prodCellID = 0;
+    private string mode = string.Empty;
+    private bool showup = false;
+
+
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //GET BROWSER-CLIENT TIME
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    DateTime nowDT;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var browserDateTime = await _browserDateTimeProvider.GetInstance();
+            nowDT = browserDateTime.Now;
+        }
+    }
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //      NAVIGATION
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    private void From_Supermarket_To_Production()
+    {
+        mode = "Supermarket=>Production";
+    }
+
+    private void From_Prod_To_Supermarket()
+    {
+
+        mode = "Production=>Supermarket";
+    }
+
+    private void Close_modal()
+    {
+        showup = false;
+    }
+
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    // DB OPERATIONS
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    private async Task Place_order(int prod_id)
+    {
+        await OnAfterRenderAsync(true);
+
+        Kanban_dbModel k = new Kanban_dbModel()
+        {
+            KANBAN_STATUS = 1,
+            KANBAN_DESTINATION = areaID,
+            KANBAN_PACKAGING_ID = new_Kanban_dbModel.KANBAN_PACKAGING_ID,
+            KANBAN_PRODUCT_ID = prod_id,
+            KANBAN_COMMENT = new_Kanban_dbModel.KANBAN_COMMENT,
+            KANBAN_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
+            KANBAN_DATETIME = nowDT,
+            KANBAN_START_DATETIME = nowDT,
+        };
+
+        //SAVE TO DB AND GET IDENTITY
+        int identity = _db.Insert_Kanban(k);
+
+        //SAVE TO DB
+        if (identity > 0)
+        {
+            KanbanTimeline_dbModel ktl = new KanbanTimeline_dbModel()
+            {
+                KANBAN_ID = identity,
+                KANBAN_TL_STATUS = 1,
+                KANBAN_TL_COMMENT = new_Kanban_dbModel.KANBAN_COMMENT,
+                KANBAN_TL_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
+                KANBAN_TL_DATETIME = nowDT,
+            };
+
+            await _db.Insert_KanbanTimeline(ktl);
+
+            //SHOW MODAL CONFIRMATION
+            showup = true;
+        }
+    }
+
+
+
+}

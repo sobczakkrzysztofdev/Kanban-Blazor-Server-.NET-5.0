@@ -1,0 +1,462 @@
+﻿@page "/KanbanTransport"
+
+@using DataAccessLibrary.Models
+@using DataAccessLibrary.Other
+@using TableDependency.SqlClient.Base.Enums
+
+@inject NavigationManager NavManager
+@inject Blazored.Localisation.Services.IBrowserDateTimeProvider _browserDateTimeProvider
+@inject AuthenticationStateProvider authStateProvider
+
+@inject IDataAccess _db
+@inject ISqlDataAccess sqlDataAccess
+@inject ISqlTableDependencyService SqlDependency
+@implements IDisposable
+
+
+<h4>Kanban Operator</h4>
+
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="text-center">
+            <h5>DESTINATION</h5>
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <div class="text-center">
+            <h5>DESCRIPTION</h5>
+        </div>
+    </div>
+
+    <div class="col-md-2">
+        <div class="text-center">
+            <h5>DATE&TIME</h5>
+        </div>
+    </div>
+
+</div>
+
+
+
+@if (kanban is not null & productData.Data is not null & areaData.Data is not null)
+{
+
+    @foreach (var k in kanban)
+    {
+<div class="row">
+    @if (k.KANBAN_STATUS == 1)
+    {
+        <div class="col-lg-3">
+            <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var a in areaData.Data)
+                    {
+                        if (k.KANBAN_DESTINATION == a.AREA_ID)
+                        {
+                            <h4>@a.AREA_NAME</h4>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var p in productData.Data)
+                    {
+                        if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                        {
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NAME</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NUMBER</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 1).StatusDescription</h4>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card h-100 bg-warning text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @*<h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 1).StatusDescription</h4>*@
+                    <h5>@k.KANBAN_START_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div>
+                <button class="btn btn-primary btn-block" @onclick="Show_modal_status_1">NEW STATUS</button>
+            </div>
+        </div>
+
+        @if (showup_modal_status_1)
+        {
+            <!-- The Modal -->
+            <div class="modal" tabindex="-1" style="display:block">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header bg-light">
+                            <h3 class="modal-title">KANBAN TRANSPORT</h3>
+                            <button type="button" class="close" @onclick="Close_modal_status_1">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body bg-light">
+                            <h4>Set new status for KANBAN order</h4>
+
+                            <p style="margin-bottom:1cm;"> </p>
+
+                            <div>
+                                <div>
+                                    <label>Add comment</label>
+                                </div>
+                                <div>
+                                    <input type="text" @bind="comment" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(annotation))
+                                {
+                                    <div>
+                                        <label class="text-danger">@annotation</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer bg-light">
+                            <div class="row">
+                                <div>
+                                    <button type="button" class="btn btn-info btn-block btn-lg" @onclick="() => Update_DB(k.KANBAN_ID, 2)">IN TRANSPORT</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    @if (k.KANBAN_STATUS == 2)
+    {
+        <div class="col-lg-3">
+            <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var a in areaData.Data)
+                    {
+                        if (k.KANBAN_DESTINATION == a.AREA_ID)
+                        {
+                            <h4>@a.AREA_NAME</h4>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var p in productData.Data)
+                    {
+                        if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                        {
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NAME</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NUMBER</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 2).StatusDescription</h4>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card h-100 bg-info text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    <h5>@k.KANBAN_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div>
+                <button class="btn btn-primary btn-block" @onclick="Show_modal_status_2">NEW STATUS</button>
+            </div>
+        </div>
+
+        @if (showup_modal_status_2)
+        {
+            <!-- The Modal -->
+            <div class="modal" tabindex="-1" style="display:block">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header bg-light">
+                            <h3 class="modal-title">KANBAN TRANSPORT</h3>
+                            <button type="button" class="close" @onclick="Close_modal_status_2">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body bg-light">
+                            <h4>Set new status for KANBAN order</h4>
+
+                            <p style="margin-bottom:1cm;"> </p>
+
+                            <div>
+                                <div>
+                                    <label>Add comment</label>
+                                </div>
+                                <div>
+                                    <input type="text" @bind="comment" />
+                                </div>
+                                @if (!string.IsNullOrEmpty(annotation))
+                                {
+                                    <div>
+                                        <label class="text-danger">@annotation</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer bg-light">
+                            <div class="row">
+                                <div>
+                                    <button type="button" class="btn btn-warning btn-lg float-left" @onclick="() => Update_DB(k.KANBAN_ID, 1)">ABORT TRANSPORT</button>
+                                </div>
+                                <br />
+                                <div>
+                                    <button type="button" class="btn btn-secondary btn-lg" @onclick="() => Update_DB(k.KANBAN_ID, 3)">DELIVERED</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    @if (k.KANBAN_STATUS == 3)
+    {
+        <div class="col-lg-3">
+            <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var a in areaData.Data)
+                    {
+                        if (k.KANBAN_DESTINATION == a.AREA_ID)
+                        {
+                            <h4>@a.AREA_NAME</h4>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    @foreach (var p in productData.Data)
+                    {
+                        if (k.KANBAN_PRODUCT_ID == p.PRODUCT_ID)
+                        {
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NAME</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@p.PRODUCT_NUMBER</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>@kanbanStatusData.StatusData.SingleOrDefault(x => x.StatusID == 3).StatusDescription</h4>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card h-100 bg-secondary text-dark" style="padding: 3px">
+                <div class="card-body text-center">
+                    <h5>@k.KANBAN_DATETIME.ToString("yyyy-MM-dd HH:mm:ss")</h5>
+                </div>
+            </div>
+        </div>
+
+    }
+
+</div>
+    }
+
+
+}
+else
+{
+    <p><em>Loading...</em></p>
+    <div class="spinner-border"></div>
+}
+
+
+
+
+@code {
+
+    private List<Kanban_dbModel> kanban = new List<Kanban_dbModel>();
+
+
+    private KanbanStatusData kanbanStatusData = new KanbanStatusData();
+    private AreaData areaData = new AreaData();
+    private ProductData productData = new ProductData();
+
+
+    private string comment = "";
+    private bool showup_modal_status_1 = false;
+    private bool showup_modal_status_2 = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        kanban = await _db.Get_Kanban();
+        kanban = kanban.OrderBy(o => o.KANBAN_STATUS).ToList();
+
+        // Subscription to table record change events
+        SqlDependency.OnKanbanChanged += KanbanChanged;
+    }
+
+    void IDisposable.Dispose()
+    {
+        SqlDependency.OnKanbanChanged -= this.KanbanChanged;
+        SqlDependency.Dispose();
+    }
+
+    // The event handler => update the HTML view
+    private async void KanbanChanged(object sender, KanbanChangeEventArgs args)
+    {
+        var recordToupdate = this.kanban.FirstOrDefault(x => x.KANBAN_ID == args.KanbanNewValue.KANBAN_ID);
+
+        if (recordToupdate == null)
+        {
+            this.kanban.Add(args.KanbanNewValue);
+        }
+        else
+        {
+            recordToupdate.KANBAN_ID = args.KanbanNewValue.KANBAN_ID;
+            recordToupdate.KANBAN_STATUS = args.KanbanNewValue.KANBAN_STATUS;
+            recordToupdate.KANBAN_DESTINATION = args.KanbanNewValue.KANBAN_DESTINATION;
+            recordToupdate.KANBAN_PRODUCT_ID = args.KanbanNewValue.KANBAN_PRODUCT_ID;
+            recordToupdate.KANBAN_PACKAGING_ID = args.KanbanNewValue.KANBAN_PACKAGING_ID;
+            recordToupdate.KANBAN_COMMENT = args.KanbanNewValue.KANBAN_COMMENT;
+            recordToupdate.KANBAN_USER_NAME = args.KanbanNewValue.KANBAN_USER_NAME;
+            recordToupdate.KANBAN_DATETIME = args.KanbanNewValue.KANBAN_DATETIME;
+            recordToupdate.KANBAN_START_DATETIME = args.KanbanNewValue.KANBAN_START_DATETIME;
+        }
+
+        kanban = kanban.OrderBy(o => o.KANBAN_STATUS).ToList();
+
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //GET BROWSER-CLIENT TIME
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    DateTime nowDT;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var browserDateTime = await _browserDateTimeProvider.GetInstance();
+            nowDT = browserDateTime.Now;
+        }
+    }
+
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //      MODAL NAVIGATION
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    private void Show_modal_status_1()
+    {
+        showup_modal_status_1 = true;
+    }
+
+    private void Show_modal_status_2()
+    {
+        showup_modal_status_2 = true;
+    }
+
+    private void Close_modal_status_1()
+    {
+        showup_modal_status_1 = false;
+    }
+
+    private void Close_modal_status_2()
+    {
+        showup_modal_status_2 = false;
+    }
+
+
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    //      DB SAVE / UPDATE
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    private bool blockedsave = true;
+    private string error_string_lenght = "Max. 200 characters";
+    private string annotation = string.Empty;
+    private async Task Update_DB(int id, int status)
+    {
+        if(comment.Length > 200)
+        {
+            annotation = error_string_lenght;
+        }
+        else
+        {
+            annotation = string.Empty;
+
+            await OnAfterRenderAsync(true);     //GET ACTUAL TIME
+
+            Kanban_dbModel kanban = new Kanban_dbModel()
+            {
+                KANBAN_ID = id,
+                KANBAN_STATUS = status,
+                KANBAN_COMMENT = comment,
+                KANBAN_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
+                KANBAN_DATETIME = nowDT,
+            };
+            await _db.Update_Kanban(kanban);
+
+
+            KanbanTimeline_dbModel kanbantimeline = new KanbanTimeline_dbModel()
+            {
+                KANBAN_ID = id,
+                KANBAN_TL_STATUS = status,
+                KANBAN_TL_COMMENT = comment,
+                KANBAN_TL_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
+                KANBAN_TL_DATETIME = nowDT,
+            };
+            await _db.Insert_KanbanTimeline(kanbantimeline);
+
+
+            showup_modal_status_1 = false;
+            showup_modal_status_2 = false;
+
+            StateHasChanged();
+        }
+    }
+}

@@ -1,0 +1,62 @@
+﻿@page "/Monitoring"
+
+@inject IStringLocalizer<App> Localizer
+@inject NavigationManager NavigationManager
+
+<h3>MONITORING</h3>
+
+<div class="row row-cols-1 row-cols-md-4">
+
+    <div class="card" style="margin: 10px; width: 400px">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["OEE"]</h5>
+            <p class="card-text">@Localizer["OEE live data. Empty page."]</p>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-secondary btn-lg btn-block" @onclick="NavToOEE">@Localizer["OEE"]</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin: 10px; width: 400px">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["KANBAN"]</h5>
+            <p class="card-text">@Localizer["Kanban live data"]</p>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-secondary btn-lg btn-block" @onclick="NavToKANBAN">@Localizer["KANBAN"]</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin: 10px; width: 400px">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["SCRAP"]</h5>
+            <p class="card-text">@Localizer["Scrap live data. Empty page."]</p>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-secondary btn-lg btn-block" @onclick="NavToSCRAP">@Localizer["SCRAP"]</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@code {
+
+    private void NavToOEE()
+    {
+        NavigationManager.NavigateTo("InProgress");
+    }
+
+    private void NavToKANBAN()
+    {
+        NavigationManager.NavigateTo("KanbanLive");
+    }
+
+    private void NavToSCRAP()
+    {
+        NavigationManager.NavigateTo("InProgress");
+    }
+
+}

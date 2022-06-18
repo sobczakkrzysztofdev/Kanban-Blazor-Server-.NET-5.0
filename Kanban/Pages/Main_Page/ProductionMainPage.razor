@@ -1,0 +1,51 @@
+﻿@page "/Production"
+
+@using Kanban.Pages.Main_Page
+@using Kanban.Resources.Pages.Main_Page
+
+@inject IStringLocalizer<_Setup> Localizer
+@inject NavigationManager NavigationManager
+
+<h2>@Localizer["Production"]</h2>
+
+
+<div class="row row-cols-1 row-cols-md-4">
+    <div class="card" style="margin: 10px; width: 400px">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["KANBAN ORDER"]</h5>
+            <p class="card-text">@Localizer["Transport order"]</p>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-secondary btn-lg btn-block" @onclick="ProdOperator">@Localizer["NEW ORDER"]</button>
+        </div>
+    </div>
+
+    <div class="card" style="margin: 10px; width: 400px">
+        <div class="card-body">
+            <h5 class="card-title">@Localizer["KANBAN TRANSPORT"]</h5>
+            <p class="card-text">@Localizer["Change status of transported goods"]</p>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-secondary btn-lg btn-block" @onclick="TransportOperator">@Localizer["TRANSPORT"]</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@code {
+
+    private void ProdOperator()
+    {
+        NavigationManager.NavigateTo("KanbanOrder");
+    }
+
+    private void TransportOperator()
+    {
+        NavigationManager.NavigateTo("KanbanTransport");
+    }
+
+
+}

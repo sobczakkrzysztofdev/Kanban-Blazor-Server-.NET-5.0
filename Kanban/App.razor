@@ -1,0 +1,27 @@
+﻿
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly">
+
+        @*https://stackoverflow.com/questions/60840986/blazor-redirect-to-login-if-user-is-not-authenticated*@
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </Found>
+
+        @*https://www.iambacon.co.uk/blog/blazor-authentication-and-authorisation-redirect-to-login*@
+        @*<Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+                <Authorizing>
+                    <p>Just checking with the boss you can come in.</p>
+                </Authorizing>
+            </AuthorizeRouteView>
+        </Found>*@
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
