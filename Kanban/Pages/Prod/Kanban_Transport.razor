@@ -14,7 +14,7 @@
 @implements IDisposable
 
 
-<h4>Kanban Operator</h4>
+<h4>Kanban Transport</h4>
 
 
 <div class="row">
@@ -95,56 +95,57 @@
         </div>
         <div class="col-lg-2">
             <div>
-                <button class="btn btn-primary btn-block" @onclick="Show_modal_status_1">NEW STATUS</button>
+                <button class="btn btn-primary btn-block" @onclick="() => Show_modal_status_1(k.KANBAN_ID)">NEW STATUS</button>
             </div>
         </div>
 
         @if (showup_modal_status_1)
         {
-            <!-- The Modal -->
-            <div class="modal" tabindex="-1" style="display:block">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            @if (kanbanModel is not null)
+            {
+                <!-- The Modal -->
+                <div class="modal" tabindex="-1" style="display:block">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
 
-                        <!-- Modal Header -->
-                        <div class="modal-header bg-light">
-                            <h3 class="modal-title">KANBAN TRANSPORT</h3>
-                            <button type="button" class="close" @onclick="Close_modal_status_1">&times;</button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body bg-light">
-                            <h4>Set new status for KANBAN order</h4>
-
-                            <p style="margin-bottom:1cm;"> </p>
-
-                            <div>
-                                <div>
-                                    <label>Add comment</label>
-                                </div>
-                                <div>
-                                    <input type="text" @bind="comment" />
-                                </div>
-                                @if (!string.IsNullOrEmpty(annotation))
-                                {
-                                    <div>
-                                        <label class="text-danger">@annotation</label>
-                                    </div>
-                                }
+                            <div class="modal-header bg-light">
+                                <h3 class="modal-title">KANBAN TRANSPORT</h3>
+                                <button type="button" class="close" @onclick="Close_modal_status_1">&times;</button>
                             </div>
-                        </div>
 
-                        <!-- Modal footer -->
-                        <div class="modal-footer bg-light">
-                            <div class="row">
+                            <div class="modal-body bg-light">
+                                <h4>Set new status for KANBAN order</h4>
+
+                                <p style="margin-bottom:1cm;"> </p>
+
                                 <div>
-                                    <button type="button" class="btn btn-info btn-block btn-lg" @onclick="() => Update_DB(k.KANBAN_ID, 2)">IN TRANSPORT</button>
+                                    <div>
+                                        <label>Add comment</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" @bind="comment" />
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(annotationComment))
+                                    {
+                                        <div>
+                                            <label class="text-danger">@annotationComment</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="modal-footer bg-light">
+                                <div class="row">
+                                    <div>
+                                        <button type="button" class="btn btn-info btn-block btn-lg" @onclick="() => Update_DB(kanbanModel.KANBAN_ID, 2)">IN TRANSPORT</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+
         }
     }
 
@@ -195,60 +196,61 @@
         </div>
         <div class="col-lg-2">
             <div>
-                <button class="btn btn-primary btn-block" @onclick="Show_modal_status_2">NEW STATUS</button>
+                <button class="btn btn-primary btn-block" @onclick="() => Show_modal_status_2(k.KANBAN_ID)">NEW STATUS</button>
             </div>
         </div>
 
         @if (showup_modal_status_2)
         {
-            <!-- The Modal -->
-            <div class="modal" tabindex="-1" style="display:block">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            @if (kanbanModel is not null)
+            {
+                <!-- The Modal -->
+                <div class="modal" tabindex="-1" style="display:block">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
 
-                        <!-- Modal Header -->
-                        <div class="modal-header bg-light">
-                            <h3 class="modal-title">KANBAN TRANSPORT</h3>
-                            <button type="button" class="close" @onclick="Close_modal_status_2">&times;</button>
-                        </div>
-
-                        <!-- Modal body -->
-                        <div class="modal-body bg-light">
-                            <h4>Set new status for KANBAN order</h4>
-
-                            <p style="margin-bottom:1cm;"> </p>
-
-                            <div>
-                                <div>
-                                    <label>Add comment</label>
-                                </div>
-                                <div>
-                                    <input type="text" @bind="comment" />
-                                </div>
-                                @if (!string.IsNullOrEmpty(annotation))
-                                {
-                                    <div>
-                                        <label class="text-danger">@annotation</label>
-                                    </div>
-                                }
+                            <div class="modal-header bg-light">
+                                <h3 class="modal-title">KANBAN TRANSPORT</h3>
+                                <button type="button" class="close" @onclick="Close_modal_status_2">&times;</button>
                             </div>
-                        </div>
 
-                        <!-- Modal footer -->
-                        <div class="modal-footer bg-light">
-                            <div class="row">
+                            <div class="modal-body bg-light">
+                                <h4>Set new status for KANBAN order</h4>
+
+                                <p style="margin-bottom:1cm;"> </p>
+
                                 <div>
-                                    <button type="button" class="btn btn-warning btn-lg float-left" @onclick="() => Update_DB(k.KANBAN_ID, 1)">ABORT TRANSPORT</button>
+                                    <div>
+                                        <label>Add comment</label>
+                                    </div>
+                                    <div>
+                                        <input type="text" @bind="comment" />
+                                    </div>
+                                    @if (!string.IsNullOrEmpty(annotationComment))
+                                    {
+                                        <div>
+                                            <label class="text-danger">@annotationComment</label>
+                                        </div>
+                                    }
                                 </div>
-                                <br />
-                                <div>
-                                    <button type="button" class="btn btn-secondary btn-lg" @onclick="() => Update_DB(k.KANBAN_ID, 3)">DELIVERED</button>
+                            </div>
+
+                            <div class="modal-footer bg-light">
+                                <div class="row">
+                                    <div>
+                                        <button type="button" class="btn btn-warning btn-lg float-left" @onclick="() => Update_DB(kanbanModel.KANBAN_ID, 1)">CANCEL TRANSPORT</button>
+                                    </div>
+                                    <br />
+                                    <div>
+                                        <button type="button" class="btn btn-secondary btn-lg" @onclick="() => Update_DB(kanbanModel.KANBAN_ID, 3)">DELIVERED</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+
         }
     }
 
@@ -318,13 +320,15 @@ else
 
     private List<Kanban_dbModel> kanban = new List<Kanban_dbModel>();
 
+    private Kanban_dbModel kanbanModel = new Kanban_dbModel();
+
 
     private KanbanStatusData kanbanStatusData = new KanbanStatusData();
     private AreaData areaData = new AreaData();
     private ProductData productData = new ProductData();
 
 
-    private string comment = "";
+    private string comment = string.Empty;
     private bool showup_modal_status_1 = false;
     private bool showup_modal_status_2 = false;
 
@@ -392,48 +396,54 @@ else
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     //      MODAL NAVIGATION
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    private void Show_modal_status_1()
+    private void Show_modal_status_1(int kanbanID)
     {
+        kanbanModel = kanban.SingleOrDefault(x => x.KANBAN_ID == kanbanID);
+
         showup_modal_status_1 = true;
     }
 
-    private void Show_modal_status_2()
+    private void Show_modal_status_2(int kanbanID)
     {
+        kanbanModel = kanban.SingleOrDefault(x => x.KANBAN_ID == kanbanID);
+
         showup_modal_status_2 = true;
     }
 
     private void Close_modal_status_1()
     {
         showup_modal_status_1 = false;
+        comment = string.Empty;
     }
 
     private void Close_modal_status_2()
     {
         showup_modal_status_2 = false;
+        comment = string.Empty;
     }
 
 
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     //      DB SAVE / UPDATE
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    private bool blockedsave = true;
     private string error_string_lenght = "Max. 200 characters";
-    private string annotation = string.Empty;
-    private async Task Update_DB(int id, int status)
+    private string annotationComment = string.Empty;
+    private async Task Update_DB(int kanbanID, int status)
     {
         if(comment.Length > 200)
         {
-            annotation = error_string_lenght;
+            annotationComment = error_string_lenght;
+            return;
         }
         else
         {
-            annotation = string.Empty;
+            annotationComment = string.Empty;
 
             await OnAfterRenderAsync(true);     //GET ACTUAL TIME
 
             Kanban_dbModel kanban = new Kanban_dbModel()
             {
-                KANBAN_ID = id,
+                KANBAN_ID = kanbanID,
                 KANBAN_STATUS = status,
                 KANBAN_COMMENT = comment,
                 KANBAN_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
@@ -444,7 +454,7 @@ else
 
             KanbanTimeline_dbModel kanbantimeline = new KanbanTimeline_dbModel()
             {
-                KANBAN_ID = id,
+                KANBAN_ID = kanbanID,
                 KANBAN_TL_STATUS = status,
                 KANBAN_TL_COMMENT = comment,
                 KANBAN_TL_USER_NAME = authStateProvider.GetAuthenticationStateAsync().Result.User.Identity.Name,
