@@ -3,6 +3,9 @@ This is a small portion of the bigger MES (Manufacturing Execution System) softw
 
 The Digital Kanban system is used to order the transport of goods to/from production. The purpose of that system is pretty straightforward - production has to keep on working without any micro stops. Digital Kanban making that goal real.
 
+Short video, no sound
+https://youtu.be/UA3dV7wuB00
+
 Technology stack in full solution:
 .NET Blazor Server - browser application;
 WinForms  - backend calculation and conectivity with sensors;
