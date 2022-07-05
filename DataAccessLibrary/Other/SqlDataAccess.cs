@@ -52,10 +52,5 @@ namespace DataAccessLibrary.Other
             }
         }
 
-
-
-
-        //https://www.youtube.com/watch?v=8DNgdphLvag
-        //37:00
     }
 }

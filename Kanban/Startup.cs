@@ -32,11 +32,8 @@ namespace Kanban
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            //added for multilanguage: https://www.youtube.com/watch?v=h82U0RQ9jtQ&t=4298s
             services.AddControllers();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -52,7 +49,6 @@ namespace Kanban
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-            //added
             services.AddTransient<ISqlDataAccess, SqlDataAccess>();
             services.AddTransient<IDataAccess, DataAccess>();
             services.AddTransient<ISqlTableDependencyService, SqlTableDependencyService>();
@@ -62,14 +58,11 @@ namespace Kanban
                 e.MaximumReceiveMessageSize = 102400000;
             });
 
-            //datetime function - must be
             services.AddBlazoredLocalisation();
 
-            //Debuging
             services.AddServerSideBlazor(o => o.DetailedErrors = true);
         }
 
-        //added for multilanguage: https://www.youtube.com/watch?v=h82U0RQ9jtQ&t=4298s
         private RequestLocalizationOptions GetLocalizationOptons()
         {
             var cultures = Configuration.GetSection("Cultures").GetChildren().ToDictionary(x => x.Key, x => x.Value);
@@ -78,7 +71,6 @@ namespace Kanban
             return localizationOptions;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -89,7 +81,6 @@ namespace Kanban
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
